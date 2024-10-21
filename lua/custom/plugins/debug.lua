@@ -69,7 +69,7 @@ return {
           return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
         end,
         cwd = '${workspaceFolder}',
-        args = { '-p', 'format-pack-and-route.json', 'run' },
+        args = { '-p', 'format-pack-and-route.json', 'run', '-t', '3600' },
         stopOnEntry = false,
       },
     }
