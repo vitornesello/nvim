@@ -62,14 +62,25 @@ return {
     }
     dap.configurations.rust = {
       {
-        name = 'launch-file',
+        name = 'routing-bridge-run',
         type = 'codelldb',
         request = 'launch',
         program = function()
           return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
         end,
         cwd = '${workspaceFolder}',
-        args = { '-p', 'format-pack-and-route.json', 'run', '-t', '3600' },
+        args = { '-p', 'format.json', 'run', '-t', '3600' },
+        stopOnEntry = false,
+      },
+      {
+        name = 'routing-bridge-check-sol',
+        type = 'codelldb',
+        request = 'launch',
+        program = function()
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        args = { '-p', 'format.json', 'check-sol', '--sol-path', 'sol.json' },
         stopOnEntry = false,
       },
     }
