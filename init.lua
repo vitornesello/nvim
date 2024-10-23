@@ -173,15 +173,16 @@ vim.opt.whichwrap:append {
 vim.g.interestingWordsGUIColors = { '#EADFB4', '#EF476F', '#f5f5f5', '#9999FF', '#FFD166', '#06D6A0' }
 
 -- emacs on insert mode
-vim.keymap.set('i', '<C-A>', '<Home>', { desc = 'go to the beginning of the line in insert mode', noremap = true })
-vim.keymap.set('i', '<C-E>', '<End>', { desc = 'go to the end of the line in insert mode', noremap = true })
-vim.keymap.set('i', '<C-B>', '<Left>', { desc = 'move cursor one character to the left in insert mode', noremap = true })
-vim.keymap.set('i', '<C-F>', '<Right>', { desc = 'move cursor one character to the right in insert mode', noremap = true })
-vim.keymap.set('i', '<C-d>', '<Del>', { desc = 'delete one character to the left in insert mode', noremap = true })
-vim.keymap.set('i', '<M-d>', '<C-o>de', { desc = 'delete one word to the right in insert mode', noremap = true })
-vim.keymap.set('i', '<M-BS>', '<C-o>db', { desc = 'delete one word to the left in insert mode', noremap = true })
-vim.keymap.set('i', '<M-b>', '<S-Left>', { desc = 'move cursor one word to the left in insert mode', noremap = true })
-vim.keymap.set('i', '<M-f>', '<S-Right>', { desc = 'move cursor one word to the right in insert mode', noremap = true })
+vim.keymap.set('i', '<C-A>', '<Home>', { desc = 'Emacs: go to the beginning of the line', noremap = true })
+vim.keymap.set('i', '<C-E>', '<End>', { desc = 'Emacs: go to the end of the line', noremap = true })
+vim.keymap.set('i', '<C-B>', '<Left>', { desc = 'Emacs: move cursor one character to the left', noremap = true })
+vim.keymap.set('i', '<C-F>', '<Right>', { desc = 'Emacs: move cursor one character to the right', noremap = true })
+vim.keymap.set('i', '<C-d>', '<Del>', { desc = 'Emacs: delete one character to the left', noremap = true })
+vim.keymap.set('i', '<M-d>', '<C-o>de', { desc = 'Emacs: delete one word to the right', noremap = true })
+vim.keymap.set('i', '<M-BS>', '<C-o>db', { desc = 'Emacs: delete one word to the left', noremap = true })
+vim.keymap.set('i', '<M-b>', '<S-Left>', { desc = 'Emacs: move cursor one word to the left', noremap = true })
+vim.keymap.set('i', '<M-f>', '<S-Right>', { desc = 'Emacs: move cursor one word to the right', noremap = true })
+vim.keymap.set('i', '<C-K>', '<C-o>d$', { desc = 'Emacs: delete until the end of the line', noremap = true })
 
 vim.keymap.set('n', '<M-1>', ':tabn 1<CR>', { desc = 'select tab 1', noremap = true })
 vim.keymap.set('n', '<M-2>', ':tabn 2<CR>', { desc = 'select tab 2', noremap = true })
