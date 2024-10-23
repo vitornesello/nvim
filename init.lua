@@ -1,4 +1,4 @@
---[[
+--[[iniini
 
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
@@ -178,8 +178,10 @@ vim.keymap.set('i', '<C-E>', '<End>', { desc = 'go to the end of the line in ins
 vim.keymap.set('i', '<C-B>', '<Left>', { desc = 'move cursor one character to the left in insert mode', noremap = true })
 vim.keymap.set('i', '<C-F>', '<Right>', { desc = 'move cursor one character to the right in insert mode', noremap = true })
 vim.keymap.set('i', '<C-d>', '<Del>', { desc = 'delete one character to the left in insert mode', noremap = true })
-vim.keymap.set('i', '<M-d>', '<Esc>lvedi', { desc = 'delete one word to the right in insert mode', noremap = true })
-vim.keymap.set('i', '<M-BS>', '<Esc>vbdi', { desc = 'delete one word to the left in insert mode', noremap = true })
+vim.keymap.set('i', '<M-d>', '<C-o>de', { desc = 'delete one word to the right in insert mode', noremap = true })
+vim.keymap.set('i', '<M-BS>', '<C-o>db', { desc = 'delete one word to the left in insert mode', noremap = true })
+vim.keymap.set('i', '<M-b>', '<S-Left>', { desc = 'move cursor one word to the left in insert mode', noremap = true })
+vim.keymap.set('i', '<M-f>', '<S-Right>', { desc = 'move cursor one word to the right in insert mode', noremap = true })
 
 vim.keymap.set('n', '<M-1>', ':tabn 1<CR>', { desc = 'select tab 1', noremap = true })
 vim.keymap.set('n', '<M-2>', ':tabn 2<CR>', { desc = 'select tab 2', noremap = true })
@@ -192,9 +194,6 @@ vim.keymap.set('n', '<leader>q[', ':cprev<CR>', { desc = 'go to previous quickfi
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-
--- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -253,11 +252,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Close buffer without closing window
 vim.api.nvim_create_user_command('CloseBuf', ': bn|:bd#', {})
-vim.keymap.set('n', '<leader>w', ':CloseBuf<CR>', { noremap = true, desc = 'Close current buffer without closing window' })
+vim.keymap.set('n', '<leader>ww', ':CloseBuf<CR>', { noremap = true, desc = 'Close current buffer without closing window' })
 
 -- Comment selected lines
-vim.keymap.set('n', '<leader>c', ':Commentary<CR>', { noremap = true, desc = 'Comment selected lines' })
-vim.keymap.set('v', '<leader>c', ':Commentary<CR>', { noremap = true, desc = 'Comment selected lines' })
+vim.keymap.set({ 'n', 'v' }, '<leader>cc', ':Commentary<CR>', { noremap = true, desc = 'Comment selected lines' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -321,6 +319,44 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'folke/trouble.nvim',
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = 'Trouble',
+    keys = {
+      {
+        '<leader>xx',
+        '<cmd>Trouble diagnostics toggle<cr>',
+        desc = 'Diagnostics (Trouble)',
+      },
+      {
+        '<leader>xX',
+        '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
+        desc = 'Buffer Diagnostics (Trouble)',
+      },
+      {
+        '<leader>cs',
+        '<cmd>Trouble symbols toggle focus=false<cr>',
+        desc = 'Symbols (Trouble)',
+      },
+      {
+        '<leader>cl',
+        '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
+        desc = 'LSP Definitions / references / ... (Trouble)',
+      },
+      {
+        '<leader>xL',
+        '<cmd>Trouble loclist toggle<cr>',
+        desc = 'Location List (Trouble)',
+      },
+      {
+        '<leader>xQ',
+        '<cmd>Trouble qflist toggle<cr>',
+        desc = 'Quickfix List (Trouble)',
+      },
+    },
+  },
+
   { 'github/copilot.vim' },
 
   {
@@ -331,10 +367,6 @@ require('lazy').setup({
     -- stylua: ignore
     keys = {
       { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-      { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
     },
   },
 
@@ -363,42 +395,63 @@ require('lazy').setup({
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-
-  { -- Collection of various small independent plugins/modules
-    'echasnovski/mini.nvim',
-    config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
-
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
-
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    init = function()
+      require('lualine').setup {
+        options = {
+          icons_enabled = true,
+          theme = 'auto',
+          component_separators = { left = '|', right = '|' },
+          section_separators = '', -- { left = '', right = '' },
+          disabled_filetypes = {
+            statusline = {},
+            winbar = {},
+          },
+          ignore_focus = {},
+          always_divide_middle = true,
+          globalstatus = true,
+          refresh = {
+            statusline = 1000,
+            tabline = 1000,
+            winbar = 1000,
+          },
+        },
+        sections = {
+          lualine_a = {
+            {
+              'mode',
+              fmt = function(str)
+                return str:sub(1, 1)
+              end,
+            },
+          },
+          lualine_b = { 'branch', 'diff', 'diagnostics' },
+          lualine_c = {
+            'filename',
+          },
+          lualine_x = {
+            'encoding',
+            'fileformat',
+            'filetype',
+          },
+          lualine_y = { 'progress' },
+          lualine_z = { 'location' },
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = { 'filename' },
+          lualine_x = { 'location' },
+          lualine_y = {},
+          lualine_z = {},
+        },
+        tabline = {},
+        winbar = {},
+        inactive_winbar = {},
+        extensions = {},
+      }
     end,
   },
 
@@ -459,7 +512,6 @@ require('lazy').setup({
       },
     },
   },
-
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -495,17 +547,21 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-nvim-lua',
+      'hrsh7th/cmp-nvim-lsp-signature-help',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/vim-vsnip',
     },
     config = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
-      local luasnip = require 'luasnip'
-      luasnip.config.setup {}
 
       cmp.setup {
         snippet = {
           expand = function(args)
-            luasnip.lsp_expand(args.body)
+            vim.snippet.expand(args.body)
           end,
         },
         completion = { completeopt = 'menu,menuone,noinsert' },
@@ -534,37 +590,48 @@ require('lazy').setup({
           --  completions whenever it has completion options available.
           ['<C-Space>'] = cmp.mapping.complete {},
 
-          -- Think of <c-l> as moving to the right of your snippet expansion.
-          --  So if you have a snippet that's like:
-          --  function $name($args)
-          --    $body
-          --  end
-          --
           -- <c-l> will move you to the right of each of the expansion locations.
           -- <c-h> is similar, except moving you backwards.
           ['<C-l>'] = cmp.mapping(function()
-            if luasnip.expand_or_locally_jumpable() then
-              luasnip.expand_or_jump()
-            end
+            vim.snippet.jump(1)
           end, { 'i', 's' }),
           ['<C-h>'] = cmp.mapping(function()
-            if luasnip.locally_jumpable(-1) then
-              luasnip.jump(-1)
-            end
+            vim.snippet.jump(-1)
           end, { 'i', 's' }),
 
           -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
         sources = {
+          { name = 'vimsnip' },
           {
             name = 'lazydev',
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'path' },
+          { name = 'path' }, -- file paths
+          { name = 'nvim_lsp', keyword_length = 3 }, -- from language server
+          { name = 'nvim_lsp_signature_help' }, -- display function signatures with current parameter emphasized
+          { name = 'nvim_lua', keyword_length = 2 }, -- complete neovim's Lua runtime API such vim.lsp.*
+          { name = 'buffer', keyword_length = 2 }, -- source current buffer
+          { name = 'calc' }, -- source for math calculation
+        },
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
+        formatting = {
+          expandable_indicator = true,
+          fields = { 'menu', 'abbr', 'kind' },
+          format = function(entry, item)
+            local menu_icon = {
+              nvim_lsp = 'λ',
+              buffer = 'Ω',
+              path = '⋗',
+            }
+            item.menu = menu_icon[entry.source.name] or 'g'
+            return item
+          end,
         },
       }
     end,

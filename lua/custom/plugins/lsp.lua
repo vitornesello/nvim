@@ -57,6 +57,11 @@ return {
           vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
 
+        -- Diagnostic keymaps
+        vim.keymap.set('n', '<leader>dd', vim.diagnostic.setloclist, { desc = 'Open [D]ocument [D]iagnostic quickfix list' })
+        vim.keymap.set('n', '<leader>di', vim.diagnostic.setqflist, { desc = 'Open all [DI]agnostic on the uickfix list' })
+        map('<leader>sd', require('telescope.builtin').diagnostics, '[S]earch [D]iagnostic with telescope')
+
         -- Jump to the definition of the word under your cursor.
         --  This is where a variable was first declared, or where a function is defined, etc.
         --  To jump back, press <C-t>.
@@ -88,7 +93,7 @@ return {
 
         -- Execute a code action, usually your cursor needs to be on top of an error
         -- or a suggestion from your LSP for this to activate.
-        map('<leader>ac', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+        map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
 
         -- WARN: This is not Goto Definition, this is Goto Declaration.
         --  For example, in C this would take you to the header.
@@ -125,7 +130,17 @@ return {
 
         vim.diagnostic.config {
           virtual_text = false,
+          signs = true,
+          update_in_insert = true,
+          underline = true,
+          severity_sort = false,
+          float = {
+            border = 'rounded',
+            header = '',
+            prefix = '',
+          },
         }
+
         vim.api.nvim_create_autocmd({ 'CursorHold' }, {
           pattern = '*',
           callback = function()
