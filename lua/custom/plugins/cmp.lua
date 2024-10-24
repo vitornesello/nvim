@@ -89,19 +89,24 @@ return { -- Autocompletion
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
-      sources = {
-        { name = 'vimsnip' },
-        {
-          name = 'lazydev',
-          -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
-          group_index = 0,
+      sorting = {
+        priority_weight = 1.0,
+        comparators = {
+          function(a, b)
+            return cmp.config.compare.kind(b, a)
+          end,
+          cmp.config.compare.score,
         },
-        { name = 'path' }, -- file paths
-        { name = 'nvim_lsp', keyword_length = 3 }, -- from language server
-        { name = 'nvim_lsp_signature_help' }, -- display function signatures with current parameter emphasized
-        { name = 'nvim_lua', keyword_length = 2 }, -- complete neovim's Lua runtime API such vim.lsp.*
-        { name = 'buffer', keyword_length = 2 }, -- source current buffer
-        { name = 'calc' }, -- source for math calculation
+      },
+      sources = {
+        { name = 'nvim_lsp', group_index = 0, priority = 10 },
+        { name = 'nvim_lsp_signature_help', group_index = 0, priority = 10 },
+        { name = 'lazydev', group_index = 0, priority = 10 },
+        { name = 'vimsnip', group_index = 0, priority = 5 },
+        { name = 'buffer', group_index = 0, keyword_length = 3, priority = 5 },
+        { name = 'nvim_lua', group_index = 1 },
+        { name = 'path', group_index = 2 },
+        { name = 'calc', group_index = 2 },
       },
       window = {
         completion = cmp.config.window.bordered(),
