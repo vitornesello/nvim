@@ -108,8 +108,6 @@ vim.opt.whichwrap:append {
   l = true,
 }
 
-vim.g.interestingWordsGUIColors = { '#EADFB4', '#EF476F', '#f5f5f5', '#9999FF', '#FFD166', '#06D6A0' }
-
 -- emacs on insert mode
 vim.keymap.set('i', '<C-A>', '<Home>', { desc = 'Emacs: go to the beginning of the line', noremap = true })
 vim.keymap.set('i', '<C-E>', '<End>', { desc = 'Emacs: go to the end of the line', noremap = true })
@@ -234,7 +232,22 @@ require('lazy').setup({
 
   { 'tpope/vim-commentary' },
 
-  { 'lfv89/vim-interestingwords' },
+  {
+    'Mr-LLLLL/interestingwords.nvim',
+    init = function()
+      require('interestingwords').setup {
+        colors = { '#EADFB4', '#EF476F', '#f5f5f5', '#9999FF', '#FFD166', '#06D6A0' },
+        search_count = false,
+        navigation = true,
+        scroll_center = false,
+        search_key = '<leader>m',
+        cancel_search_key = '<leader>M',
+        color_key = '<leader>k',
+        cancel_color_key = '<leader>K',
+        select_mode = 'loop',
+      }
+    end,
+  },
 
   {
     'christoomey/vim-tmux-navigator',
