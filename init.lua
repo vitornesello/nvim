@@ -104,7 +104,7 @@ vim.opt.whichwrap:append {
   ['>'] = true,
   ['['] = true,
   [']'] = true,
-  -- h = true,
+  h = true,
   l = true,
 }
 
