@@ -348,6 +348,22 @@ require('lazy').setup({
   },
 
   {
+    'rebelot/kanagawa.nvim',
+    priority = 1000, -- Make sure to load this before all the other start plugins.
+    init = function()
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+
+  {
+    'rose-pine/neovim',
+    priority = 1000, -- Make sure to load this before all the other start plugins.
+    init = function()
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+
+  {
     'loctvl842/monokai-pro.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
