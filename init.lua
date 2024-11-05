@@ -162,7 +162,7 @@ vim.keymap.set('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
 vim.api.nvim_create_autocmd('BufWinEnter', {
   pattern = { '*.rs' },
   desc = 'Highlight columns when in rust file',
-  group = vim.api.nvim_create_augroup('highlight-col-lang', { clear = true }),
+  group = vim.api.nvim_create_augroup('highlight-col-rs', { clear = true }),
   callback = function()
     vim.api.nvim_set_option_value('colorcolumn', '90,100', {})
   end,
@@ -172,7 +172,7 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
 vim.api.nvim_create_autocmd('BufWinEnter', {
   pattern = { '*.jl, *.md' },
   desc = 'Highlight columns when in julia and markdown files',
-  group = vim.api.nvim_create_augroup('highlight-col-lang', { clear = true }),
+  group = vim.api.nvim_create_augroup('highlight-col-jl-md', { clear = true }),
   callback = function()
     vim.api.nvim_set_option_value('colorcolumn', '80,92', {})
   end,
