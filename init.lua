@@ -144,16 +144,16 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 
 vim.keymap.set('n', '<M-d>', 'viwxi', { desc = 'Replace work under cursor' })
 
-vim.g.copilot_no_tab_map = true
-vim.api.nvim_create_autocmd('VimEnter', {
-  desc = 'Disable copilot by default',
-  group = vim.api.nvim_create_augroup('copilot', { clear = true }),
-  command = 'Copilot disable',
-})
-vim.keymap.set('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
-  expr = true,
-  replace_keycodes = false,
-})
+-- vim.g.copilot_no_tab_map = true
+-- vim.api.nvim_create_autocmd('VimEnter', {
+--   desc = 'Disable copilot by default',
+--   group = vim.api.nvim_create_augroup('copilot', { clear = true }),
+--   command = 'Copilot disable',
+-- })
+-- vim.keymap.set('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
+--   expr = true,
+--   replace_keycodes = false,
+-- })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -311,7 +311,7 @@ require('lazy').setup({
     },
   },
 
-  { 'github/copilot.vim' },
+  -- { 'github/copilot.vim' },
 
   {
     'folke/flash.nvim',
