@@ -117,7 +117,7 @@ vim.keymap.set('i', '<C-P>', '<Up>', { desc = 'Emacs: move cursor to the previou
 vim.keymap.set('i', '<C-N>', '<Down>', { desc = 'Emacs: move cursor to the next line', noremap = true })
 vim.keymap.set('i', '<C-d>', '<Del>', { desc = 'Emacs: delete one character to the left', noremap = true })
 vim.keymap.set('i', '<M-d>', '<C-o>de', { desc = 'Emacs: delete one word to the right', noremap = true })
-vim.keymap.set('i', '<M-BS>', '<C-o>db', { desc = 'Emacs: delete one word to the left', noremap = true })
+vim.keymap.set('i', '<M-BS>', '<C-w>', { desc = 'Emacs: delete one word to the left', noremap = true })
 vim.keymap.set('i', '<M-b>', '<S-Left>', { desc = 'Emacs: move cursor one word to the left', noremap = true })
 vim.keymap.set('i', '<M-f>', '<S-Right>', { desc = 'Emacs: move cursor one word to the right', noremap = true })
 vim.keymap.set('i', '<C-K>', '<C-o>d$', { desc = 'Emacs: delete until the end of the line', noremap = true })
