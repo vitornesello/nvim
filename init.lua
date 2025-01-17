@@ -233,6 +233,24 @@ require('lazy').setup({
   { 'tpope/vim-commentary' },
 
   {
+    'stevearc/oil.nvim',
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    opts = {},
+    -- Optional dependencies
+    dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
+  },
+
+  {
+    'saecki/crates.nvim',
+    tag = 'stable',
+    config = function()
+      require('crates').setup()
+    end,
+  },
+
+  {
     'Mr-LLLLL/interestingwords.nvim',
     init = function()
       require('interestingwords').setup {
