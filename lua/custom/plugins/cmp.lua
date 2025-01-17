@@ -90,20 +90,20 @@ return { -- Autocompletion
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
       sorting = {
-        priority_weight = 1.0,
+        priority_weight = 10.0,
         comparators = {
           function(a, b)
-            return cmp.config.compare.kind(b, a)
+            return cmp.config.compare.kind(a, b)
           end,
           cmp.config.compare.score,
         },
       },
       sources = {
-        { name = 'nvim_lsp', group_index = 0, priority = 10 },
-        { name = 'nvim_lsp_signature_help', group_index = 0, priority = 10 },
-        { name = 'lazydev', group_index = 0, priority = 10 },
-        { name = 'vimsnip', group_index = 0, priority = 5 },
-        { name = 'buffer', group_index = 0, keyword_length = 3, priority = 5 },
+        { name = 'nvim_lsp', group_index = 0, priority = 1 },
+        { name = 'nvim_lsp_signature_help', group_index = 0, priority = 1 },
+        { name = 'lazydev', group_index = 0, priority = 1 },
+        { name = 'vimsnip', group_index = 0, priority = 10 },
+        { name = 'buffer', group_index = 0, keyword_length = 3, priority = 10 },
         { name = 'nvim_lua', group_index = 1 },
         { name = 'path', group_index = 2 },
         { name = 'calc', group_index = 2 },
