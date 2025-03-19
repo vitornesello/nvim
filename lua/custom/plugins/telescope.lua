@@ -52,6 +52,17 @@ return {
         mappings = {
           i = { ['<esc>'] = require('telescope.actions').close },
         },
+        vimgrep_arguments = {
+          'rg',
+          '--color=always',
+          '--no-heading',
+          '--with-filename',
+          '--line-number',
+          '--column',
+          '--smart-case',
+          '--ignore-file',
+          '.gitignore',
+        },
       },
 
       pickers = {
