@@ -11,14 +11,15 @@ return {
   },
   cmd = 'Neotree',
   keys = {
-    { '<M-E>', ':Neotree left<CR>', desc = 'NeoTree left', silent = true },
-    { '\\', ':Neotree float<CR>', desc = 'NeoTree float', silent = true },
+    { '<M-E>', ':Neotree filesystem reveal left <CR>', desc = 'NeoTree left', silent = true },
+    { '\\', ':Neotree filesystem reveal float <CR>', desc = 'NeoTree float', silent = true },
   },
   opts = {
     filesystem = {
       window = {
         mappings = {
           ['\\'] = 'close_window',
+          ['<M-E>'] = 'close_window',
         },
       },
     },
