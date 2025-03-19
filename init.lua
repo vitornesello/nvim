@@ -142,7 +142,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
-vim.keymap.set('n', '<M-d>', 'viwxi', { desc = 'Replace work under cursor' })
+vim.keymap.set('n', '<M-d>', 'viwxi', { desc = 'Replace word under cursor' })
 
 -- vim.g.copilot_no_tab_map = true
 -- vim.api.nvim_create_autocmd('VimEnter', {
