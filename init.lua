@@ -200,7 +200,7 @@ vim.keymap.set({ 'n', 'v' }, '<leader>cc', ':Commentary<CR>', { noremap = true, 
 vim.keymap.set({ 'n' }, '<leader>s', ':%s/<C-r><C-w>/', { noremap = true, desc = 'Search and replace word under cursor' })
 
 -- Open Oil
-vim.keymap.set({ 'n' }, '<leader>o', ':Oil', { noremap = true, desc = 'Open Oil' })
+vim.keymap.set({ 'n' }, '<leader>o', ':Oil<CR>', { noremap = true, desc = 'Open Oil' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
