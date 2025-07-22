@@ -69,7 +69,7 @@ return {
           return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
         end,
         cwd = '${workspaceFolder}',
-        args = { '-p', 'format.json', 'run', '-t', '3600' },
+        args = { '-i', 'format.json', 'run', '-t', '3600' },
         stopOnEntry = false,
       },
       {
@@ -80,7 +80,7 @@ return {
           return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
         end,
         cwd = '${workspaceFolder}',
-        args = { '-p', 'format.json', 'check-sol', '--sol-path', 'sol.json' },
+        args = { '-i', 'format.json', 'check-sol', '--itera-sol', 'sol.json' },
         stopOnEntry = false,
       },
     }
