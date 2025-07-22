@@ -4,7 +4,7 @@ return {
   main = 'nvim-treesitter.configs', -- Sets main module to use for opts
   -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
   opts = {
-    ensure_installed = { 'rust', 'typescript', 'c', 'lua', 'vim', 'julia', 'javascript', 'html' },
+    ensure_installed = { 'rust', 'typescript', 'c', 'lua', 'vim', 'julia', 'javascript', 'html', 'css' },
     -- Autoinstall languages that are not installed
     auto_install = false,
     sync_install = false,

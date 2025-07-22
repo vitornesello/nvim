@@ -202,6 +202,9 @@ vim.keymap.set({ 'n' }, '<leader>s', ':%s/<C-r><C-w>/', { noremap = true, desc =
 -- Open Oil
 vim.keymap.set({ 'n' }, '<leader>oi', ':Oil<CR>', { noremap = true, desc = 'Open [Oi]l' })
 
+-- Toggle colorizer
+vim.keymap.set({ 'n' }, '<leader>tc', ':ColorizerToggle<CR>', { noremap = true, desc = '[T]oggle [C]olorizer' })
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -271,6 +274,22 @@ require('lazy').setup({
         select_mode = 'loop',
       }
     end,
+  },
+
+  {
+    'norcalli/nvim-colorizer.lua',
+  },
+
+  {
+    'luckasRanarison/tailwind-tools.nvim',
+    name = 'tailwind-tools',
+    build = ':UpdateRemotePlugins',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-telescope/telescope.nvim', -- optional
+      'neovim/nvim-lspconfig', -- optional
+    },
+    opts = {}, -- your configuration
   },
 
   {
@@ -447,11 +466,9 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         rust = { 'rustfmt' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        html = { 'prettier' },
       },
     },
   },
