@@ -199,6 +199,9 @@ vim.keymap.set({ 'n', 'v' }, '<leader>cc', ':Commentary<CR>', { noremap = true, 
 -- Search and replace word under cursor
 vim.keymap.set({ 'n' }, '<leader>s', ':%s/<C-r><C-w>/', { noremap = true, desc = 'Search and replace word under cursor' })
 
+-- Conver visual selection to snake case
+vim.keymap.set({ 'v' }, '<leader>c_', ':s/[a-z]\\@<=[A-Z]/_\\l\\0/g<CR>', { noremap = true, desc = 'Convert visual selection to snake case' })
+
 -- Open Oil
 vim.keymap.set({ 'n' }, '<leader>oi', ':Oil<CR>', { noremap = true, desc = 'Open [Oi]l' })
 
