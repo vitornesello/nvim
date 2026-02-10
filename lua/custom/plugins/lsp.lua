@@ -250,7 +250,9 @@ return {
 
     require('mason-lspconfig').setup {
       ensure_installed = vim.tbl_keys(servers),
-      -- Remove handlers - we'll configure servers directly instead
+      automatic_enable = {
+        exclude = { 'ts_ls' }, -- Exclude ts_ls - handled by typescript-tools.nvim
+      },
     }
 
     -- Configure servers using native vim.lsp.config API
