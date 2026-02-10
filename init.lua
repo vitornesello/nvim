@@ -477,6 +477,13 @@ require('lazy').setup({
         typescript = { 'prettier' },
         html = { 'prettier' },
       },
+      formatters = {
+        -- Use rustup-managed rustfmt instead of Mason's version
+        -- This ensures rustfmt version matches the active Rust toolchain
+        rustfmt = {
+          command = vim.fn.expand('~/.cargo/bin/rustfmt'),
+        },
+      },
     },
   },
   { import = 'custom.plugins' },

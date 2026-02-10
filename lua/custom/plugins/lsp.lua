@@ -242,7 +242,7 @@ return {
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
       'prettier', -- Used to format TypeScript, JavaScript, HTML, CSS, etc.
-      'rustfmt', -- Used to format Rust code
+      -- rustfmt should be installed via rustup, not Mason
       'typescript-language-server', -- Needed for typescript-tools.nvim
       'angular-language-server', -- Angular Language Service
     })
