@@ -33,21 +33,19 @@ return { -- Autocompletion
     --  into multiple repos for maintenance purposes.
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-path',
-    'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-nvim-lua',
     'hrsh7th/cmp-nvim-lsp-signature-help',
-    'hrsh7th/cmp-path',
     'hrsh7th/cmp-buffer',
-    'hrsh7th/vim-vsnip',
   },
   config = function()
     -- See `:help cmp`
     local cmp = require 'cmp'
+    local luasnip = require 'luasnip'
 
     cmp.setup {
       snippet = {
         expand = function(args)
-          vim.snippet.expand(args.body)
+          luasnip.lsp_expand(args.body)
         end,
       },
       completion = { completeopt = 'menu,menuone,noinsert' },
@@ -69,7 +67,7 @@ return { -- Autocompletion
         -- Accept ([J]ay!) the completion.
         --  This will auto-import if your LSP supports it.
         --  This will expand snippets if the LSP sent a snippet.
-        ['<C-j>'] = cmp.mapping.confirm { select = true },
+        -- ['<C-j>'] = cmp.mapping.confirm { select = true },
         ['<CR>'] = cmp.mapping.confirm { select = true },
 
         -- Manually trigger a completion from nvim-cmp.
@@ -80,10 +78,14 @@ return { -- Autocompletion
         -- <c-l> will move you to the right of each of the expansion locations.
         -- <c-h> is similar, except moving you backwards.
         ['<C-l>'] = cmp.mapping(function()
-          vim.snippet.jump(1)
+          if luasnip.expand_or_locally_jumpable() then
+            luasnip.expand_or_jump()
+          end
         end, { 'i', 's' }),
         ['<C-h>'] = cmp.mapping(function()
-          vim.snippet.jump(-1)
+          if luasnip.locally_jumpable(-1) then
+            luasnip.jump(-1)
+          end
         end, { 'i', 's' }),
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
@@ -102,11 +104,10 @@ return { -- Autocompletion
         { name = 'nvim_lsp', group_index = 0, priority = 1 },
         { name = 'nvim_lsp_signature_help', group_index = 0, priority = 1 },
         { name = 'lazydev', group_index = 0, priority = 1 },
-        { name = 'vimsnip', group_index = 0, priority = 10 },
+        { name = 'luasnip', group_index = 0, priority = 10 },
         { name = 'buffer', group_index = 0, keyword_length = 3, priority = 10 },
         { name = 'nvim_lua', group_index = 1 },
         { name = 'path', group_index = 2 },
-        { name = 'calc', group_index = 2 },
       },
       window = {
         completion = cmp.config.window.bordered(),

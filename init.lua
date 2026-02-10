@@ -258,7 +258,7 @@ require('lazy').setup({
     'saecki/crates.nvim',
     tag = 'stable',
     config = function()
-      require('crates').setup()
+      require('crates').setup {}
     end,
   },
 
@@ -292,7 +292,11 @@ require('lazy').setup({
       'nvim-telescope/telescope.nvim', -- optional
       'neovim/nvim-lspconfig', -- optional
     },
-    opts = {}, -- your configuration
+    opts = {
+      server = {
+        override = false, -- Disable automatic lspconfig setup
+      },
+    },
   },
 
   {

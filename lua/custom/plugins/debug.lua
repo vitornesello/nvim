@@ -62,6 +62,28 @@ return {
     }
     dap.configurations.rust = {
       {
+        name = 'dl-run',
+        type = 'codelldb',
+        request = 'launch',
+        program = function()
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        args = function()
+          local args_string = vim.fn.input 'Arguments: '
+          if args_string == '' then
+            return {}
+          end
+          -- Split the string into a table of arguments
+          local args = {}
+          for arg in string.gmatch(args_string, '%S+') do
+            table.insert(args, arg)
+          end
+          return args
+        end,
+        stopOnEntry = false,
+      },
+      {
         name = 'routing-bridge-run',
         type = 'codelldb',
         request = 'launch',

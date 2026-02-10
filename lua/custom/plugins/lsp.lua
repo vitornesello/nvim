@@ -13,6 +13,13 @@ return {
 
     -- Allows extra capabilities provided by nvim-cmp
     'hrsh7th/cmp-nvim-lsp',
+
+    -- Better TypeScript support
+    {
+      'pmizio/typescript-tools.nvim',
+      dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+      opts = {},
+    },
   },
   config = function()
     -- Brief aside: **What is LSP?**
@@ -198,14 +205,13 @@ return {
       rust_analyzer = {},
       -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
       --
-      -- Some languages (like typescript) have entire language plugins that can be useful:
-      --    https://github.com/pmizio/typescript-tools.nvim
-      --
-      -- But for many setups, the LSP (`ts_ls`) will work just fine
-      -- ts_ls = {},
+      -- NOTE: Using typescript-tools.nvim instead of ts_ls for better TypeScript support
+      -- ts_ls is handled by the typescript-tools plugin configured above
       --
 
       julials = {},
+      angularls = {},
+      tailwindcss = {},
       lua_ls = {
         -- cmd = {...},
         -- filetypes = { ...},
@@ -235,19 +241,118 @@ return {
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
+      'prettier', -- Used to format TypeScript, JavaScript, HTML, CSS, etc.
+      'rustfmt', -- Used to format Rust code
+      'typescript-language-server', -- Needed for typescript-tools.nvim
+      'angular-language-server', -- Angular Language Service
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
     require('mason-lspconfig').setup {
-      handlers = {
-        function(server_name)
-          local server = servers[server_name] or {}
-          -- This handles overriding only values explicitly passed
-          -- by the server configuration above. Useful when disabling
-          -- certain features of an LSP (for example, turning off formatting for ts_ls)
-          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
-        end,
+      ensure_installed = vim.tbl_keys(servers),
+      -- Remove handlers - we'll configure servers directly instead
+    }
+
+    -- Configure servers using native vim.lsp.config API
+    for server_name, server_config in pairs(servers) do
+      -- Skip ts_ls (handled by typescript-tools.nvim)
+      if server_name ~= 'ts_ls' then
+        -- Merge capabilities and server-specific config
+        local final_config = vim.tbl_deep_extend('force', {
+          capabilities = capabilities,
+        }, server_config)
+
+        -- Register the LSP configuration
+        vim.lsp.config(server_name, final_config)
+      end
+    end
+
+    -- Enable servers based on filetype
+    local filetype_servers = {
+      c = { 'clangd' },
+      cpp = { 'clangd' },
+      rust = { 'rust_analyzer' },
+      julia = { 'julials' },
+      lua = { 'lua_ls' },
+      typescript = { 'angularls' },
+      typescriptreact = { 'angularls', 'tailwindcss' },
+      html = { 'angularls', 'tailwindcss' },
+      css = { 'tailwindcss' },
+      scss = { 'tailwindcss' },
+      javascriptreact = { 'tailwindcss' },
+    }
+
+    vim.api.nvim_create_autocmd('FileType', {
+      group = vim.api.nvim_create_augroup('lsp-config-enable', { clear = true }),
+      callback = function(args)
+        local servers_to_enable = filetype_servers[vim.bo[args.buf].filetype]
+        if servers_to_enable then
+          for _, server in ipairs(servers_to_enable) do
+            vim.lsp.enable(server)
+          end
+        end
+      end,
+    })
+
+    -- Setup typescript-tools separately with enhanced capabilities
+    require('typescript-tools').setup {
+      capabilities = capabilities,
+      settings = {
+        -- spawn additional tsserver instance to calculate diagnostics on it
+        separate_diagnostic_server = true,
+        -- "change"|"insert_leave" determine when the client asks the server about diagnostic
+        publish_diagnostic_on = 'insert_leave',
+        -- array of strings("fix_all"|"add_missing_imports"|"remove_unused"|
+        -- "remove_unused_imports"|"organize_imports") -- or string "all"
+        -- to include all supported code actions
+        -- specify commands exposed as code_actions
+        expose_as_code_action = {
+          'fix_all',
+          'add_missing_imports',
+          'remove_unused',
+          'organize_imports',
+        },
+        -- string|nil - specify a custom path to `tsserver.js` file, if this is nil or file under path
+        -- not exists then standard path resolution strategy is applied
+        tsserver_path = nil,
+        -- specify a list of plugins to load by tsserver, e.g., for support `styled-components`
+        -- (see 💅 `styled-components` support section)
+        tsserver_plugins = {},
+        -- this value is passed to: https://nodejs.org/api/cli.html#--max-old-space-sizesize-in-megabytes
+        -- memory limit in megabytes or "auto"(basically no limit)
+        tsserver_max_memory = 'auto',
+        -- described below
+        tsserver_format_options = {},
+        tsserver_file_preferences = {
+          includeInlayParameterNameHints = 'all',
+          includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+          includeInlayFunctionParameterTypeHints = true,
+          includeInlayVariableTypeHints = true,
+          includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+          includeInlayPropertyDeclarationTypeHints = true,
+          includeInlayFunctionLikeReturnTypeHints = true,
+          includeInlayEnumMemberValueHints = true,
+        },
+        -- locale of all tsserver messages, supported locales you can find here:
+        -- https://github.com/microsoft/TypeScript/blob/3c221fc086be52b19801f6e8d82596d04607ede6/src/compiler/utilitiesPublic.ts#L620
+        tsserver_locale = 'en',
+        -- mirror of VSCode's `typescript.suggest.completeFunctionCalls`
+        complete_function_calls = false,
+        include_completions_with_insert_text = true,
+        -- CodeLens
+        -- WARNING: Experimental feature also in VSCode, because it might hit performance of server.
+        -- possible values: ("off"|"all"|"implementations_only"|"references_only")
+        code_lens = 'off',
+        -- by default code lenses are displayed on all referencable values and for some of you it can
+        -- be too much this option reduce count of them by removing member references from lenses
+        disable_member_code_lens = true,
+        -- JSXCloseTag
+        -- WARNING: it is disabled by default (maybe you configuration or distro already uses nvim-ts-autotag,
+        -- that maybe have a conflict if enable this feature. )
+        jsx_close_tag = {
+          enable = false,
+          filetypes = { 'javascriptreact', 'typescriptreact' },
+        },
       },
     }
   end,
