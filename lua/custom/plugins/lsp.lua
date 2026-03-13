@@ -47,6 +47,60 @@ return {
     -- If you're wondering about lsp vs treesitter, you can check out the wonderfully
     -- and elegantly composed help section, `:help lsp-vs-treesitter`
 
+    -- Configure diagnostics globally (before LspAttach)
+    vim.diagnostic.config {
+      virtual_text = false,
+      signs = true,
+      update_in_insert = true,
+      underline = true,
+      severity_sort = false,
+      float = {
+        border = 'rounded',
+        header = '',
+        prefix = '',
+      },
+    }
+
+    -- Show diagnostics on cursor hold
+    vim.api.nvim_create_autocmd({ 'CursorHold' }, {
+      pattern = '*',
+      callback = function()
+        for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+          if vim.api.nvim_win_get_config(winid).zindex then
+            return
+          end
+        end
+        vim.diagnostic.open_float {
+          scope = 'cursor',
+          focusable = false,
+          close_events = {
+            'CursorMoved',
+            'CursorMovedI',
+            'BufHidden',
+            'InsertCharPre',
+            'WinLeave',
+          },
+        }
+      end,
+    })
+
+    -- Clear and refresh diagnostics on buffer write for better accuracy
+    vim.api.nvim_create_autocmd('BufWritePost', {
+      pattern = '*.rs',
+      group = vim.api.nvim_create_augroup('rust-diagnostics-refresh', { clear = true }),
+      callback = function(args)
+        -- Small delay to allow rust-analyzer to process the file
+        vim.defer_fn(function()
+          -- Clear old diagnostics first
+          vim.diagnostic.reset(nil, args.buf)
+          -- Request fresh diagnostics from the LSP
+          vim.lsp.buf_request(args.buf, 'textDocument/diagnostic', {
+            textDocument = vim.lsp.util.make_text_document_params(args.buf),
+          })
+        end, 100)
+      end,
+    })
+
     --  This function gets run when an LSP attaches to a particular buffer.
     --    That is to say, every time a new file is opened that is associated with
     --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
@@ -135,41 +189,6 @@ return {
           })
         end
 
-        vim.diagnostic.config {
-          virtual_text = false,
-          signs = true,
-          update_in_insert = true,
-          underline = true,
-          severity_sort = false,
-          float = {
-            border = 'rounded',
-            header = '',
-            prefix = '',
-          },
-        }
-
-        vim.api.nvim_create_autocmd({ 'CursorHold' }, {
-          pattern = '*',
-          callback = function()
-            for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
-              if vim.api.nvim_win_get_config(winid).zindex then
-                return
-              end
-            end
-            vim.diagnostic.open_float {
-              scope = 'cursor',
-              focusable = false,
-              close_events = {
-                'CursorMoved',
-                'CursorMovedI',
-                'BufHidden',
-                'InsertCharPre',
-                'WinLeave',
-              },
-            }
-          end,
-        })
-
         -- The following code creates a keymap to toggle inlay hints in your
         -- code, if the language server you are using supports them
         --
@@ -202,7 +221,43 @@ return {
       clangd = {},
       -- gopls = {},
       -- pyright = {},
-      rust_analyzer = {},
+      rust_analyzer = {
+        settings = {
+          ['rust-analyzer'] = {
+            -- Enable check on save
+            checkOnSave = true,
+            -- Use clippy for additional lints
+            check = {
+              command = 'clippy',
+            },
+            -- Improve diagnostic performance
+            diagnostics = {
+              enable = true,
+              -- Refresh diagnostics when saving
+              refreshSupport = true,
+              -- Disable some expensive checks that can cause cycles
+              disabled = { 'unresolved-proc-macro' },
+            },
+            -- Improve cargo check performance
+            cargo = {
+              allFeatures = true,
+              -- Limit build scripts to prevent cycles
+              buildScripts = {
+                enable = true,
+                overrideCommand = nil,
+              },
+            },
+            -- Prevent infinite macro expansion that can cause cycles
+            procMacro = {
+              enable = true,
+              -- Limit recursion depth
+              attributes = {
+                enable = true,
+              },
+            },
+          },
+        },
+      },
       -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
       --
       -- NOTE: Using typescript-tools.nvim instead of ts_ls for better TypeScript support

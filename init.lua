@@ -28,6 +28,10 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Reduce LSP logging to prevent log bloat
+-- Only log errors, not warnings (prevents rust-analyzer panic spam)
+vim.lsp.set_log_level('ERROR')
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
